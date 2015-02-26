@@ -16,6 +16,12 @@ class Film(models.Model):
     imdb_id = models.CharField(max_length=12)
     title = models.TextField()
     type = models.CharField(max_length=3, choices=FILM_TYPE_CHOICES)
+    year = models.PositiveSmallIntegerField()
+    runtime = models.PositiveSmallIntegerField()
+    released = models.DateField()
+    rating = models.DecimalField(max_digits=3, decimal_places=1)
+    number_of_votes = models.PositiveIntegerField()
+
 
     def __unicode__(self):
         return self.title
@@ -27,22 +33,8 @@ class Film(models.Model):
         else:
             return False
 
-class Additional(models.Model):
-    year = models.PositiveSmallIntegerField()
-    runtime = models.PositiveSmallIntegerField()
-    released = models.DateField()
-    film = models.OneToOneField(Film, primary_key=True)
-
-    def __unicode__(self):
-        return "Additional Info for \"%s\"" % self.film.title
-
-class OverallRating(models.Model):
-    rating = models.DecimalField(max_digits=3, decimal_places=1)
-    number_of_votes = models.PositiveIntegerField()
-    film = models.OneToOneField(Film, primary_key=True)
-
-    def __unicode__(self):
-        return "Rating for \"%s\"" % self.film.title
+    def decade(self):
+        return self.year / 10 * 10
 
 class Director(models.Model):
     name = models.TextField()
