@@ -16,11 +16,11 @@ class Film(models.Model):
     imdb_id = models.CharField(max_length=12)
     title = models.TextField()
     type = models.CharField(max_length=3, choices=FILM_TYPE_CHOICES)
-    year = models.PositiveSmallIntegerField()
-    runtime = models.PositiveSmallIntegerField()
-    released = models.DateField()
-    rating = models.DecimalField(max_digits=3, decimal_places=1)
-    number_of_votes = models.PositiveIntegerField()
+    year = models.PositiveSmallIntegerField(blank=True, null=True)
+    runtime = models.PositiveSmallIntegerField(blank=True, null=True)
+    released = models.DateField(blank=True, null=True)
+    rating = models.DecimalField(max_digits=3, decimal_places=1, blank=True, null=True)
+    number_of_votes = models.PositiveIntegerField(blank=True, null=True)
 
 
     def __unicode__(self):
