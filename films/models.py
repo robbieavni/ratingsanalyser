@@ -13,7 +13,7 @@ class Film(models.Model):
         ('TVS', 'TV Special'),
         ('VG', 'Video Game'),
     )
-    imdb_id = models.CharField(max_length=12)
+    imdb_id = models.CharField(max_length=12, primary_key=True)
     title = models.TextField()
     type = models.CharField(max_length=3, choices=FILM_TYPE_CHOICES)
     year = models.PositiveSmallIntegerField(blank=True, null=True)

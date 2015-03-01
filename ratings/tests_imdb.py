@@ -1,6 +1,7 @@
 from django.test import TestCase
 from imdb import ImdbPoller, ImdbResponse
 from films.models import Film
+from ratings.models import Rating
 
 class ImdbPollerTestCase(TestCase):
     def setUp(self):
@@ -17,9 +18,21 @@ class ImdbPollerTestCase(TestCase):
         """Successfully adds films and ratings to database"""
         self.imdb_response = ImdbResponse(self.response)
         self.imdb_response.addFilmsAndRatingsFromCSV(self.user_id)
+
         films = Film.objects.all()
-        self.assertGreater(len(films),100)
+        count = len(films)
+        self.assertGreater(count, 100)
+        ratings = Rating.objects.all()
+        self.assertEqual(len(ratings), count)
+
         cabin = Film.objects.get(imdb_id='tt1259521')
         self.assertEqual(cabin.title, 'The Cabin in the Woods')
         self.assertEqual(cabin.runtime, 95)
         self.assertEqual(cabin.year, 2012)
+
+        # Parse a second time and test that no duplicates are added
+        self.imdb_response.addFilmsAndRatingsFromCSV(self.user_id)
+        films = Film.objects.all()
+        self.assertEqual(len(films), count)
+        ratings = Rating.objects.all()
+        self.assertEqual(len(ratings), count)
