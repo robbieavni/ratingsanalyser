@@ -19,7 +19,7 @@ class Film(models.Model):
     year = models.PositiveSmallIntegerField(blank=True, null=True)
     runtime = models.PositiveSmallIntegerField(blank=True, null=True)
     released = models.DateField(blank=True, null=True)
-    rating = models.DecimalField(max_digits=3, decimal_places=1, blank=True, null=True)
+    imdb_rating = models.DecimalField(max_digits=3, decimal_places=1, blank=True, null=True)
     number_of_votes = models.PositiveIntegerField(blank=True, null=True)
 
 
