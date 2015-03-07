@@ -1,3 +1,5 @@
 from django.db import models
 
-# Create your models here.
+
+class ImdbUser(models.Model):
+    imdb_id = models.CharField(max_length=12)

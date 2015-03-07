@@ -1,12 +1,13 @@
-from django.test import TestCase
+from django.test import TransactionTestCase
 from imdb import ImdbPoller, ImdbResponse
 from films.models import Film
 from ratings.models import Rating
+from website.models import ImdbUser
 
 
-class ImdbPollerTestCase(TestCase):
+class ImdbPollerTestCase(TransactionTestCase):
     def setUp(self):
-        self.poller = ImdbPoller('BCYhEodibuPWtshDLs5tNtAHZj_5KgqyLqJaafVk9OZVRH_eWuAGYrQnTb4PN-92iRraBublbOH7rCOCo_QZ9IlvTx9fZCtf3-pq33iDj2RUNwH2LLg6XdD9HRFLv-TItPkv6sD-le1J3hpZlOlDp78UVxuDTdj6guHwwYOB1FR3T8yDch9OnidQVxE-4fvgQf6Y')
+        self.poller = ImdbPoller('BCYoJE9DlwPgWDsoMxvLpKNRncr8Qi-KgGxbbhgmGnbpOO-shjdGyIyUFboEIltBfpoHWOknFvCJPeKD-ygX9i2URrJ8fsxBFRrvUSxp1V6xTlidhXWPORBqGwDg2GEKM4iUCG28RuRTAsRo0hBqZ52QVzuo9wqwFxFc2J6Ha9n0EYdipmHMrV8_0W2E_gNq6US1')
         self.user_id = 'ur2433136'
         self.response = self.poller.requestRatingsResponse(self.user_id)
 
@@ -15,9 +16,9 @@ class ImdbPollerTestCase(TestCase):
         self.assertEqual(self.response.status_code,200)
         self.assertEqual(self.response.headers._store['content-type'][1],'text/csv; charset=utf-8')
 
-class ImdbParserTestCase(TestCase):
+class ImdbParserTestCase(TransactionTestCase):
     def setUp(self):
-        self.user_id = 'ur2433136'
+        self.user_id = 'ur9663707'
         self.response = Object()
         self.response.content = """"position","const","created","modified","description","Title","Title type","Directors","You rated","IMDb Rating","Runtime (mins)","Year","Genres","Num. Votes","Release Date (month/day/year)","URL"
 "1","tt2381941","Sun Mar  1 00:00:00 2015","","","Focus","Feature Film","Glenn Ficarra, John Requa","6","7.0","104","2015","comedy, crime, drama, romance","3467","2015-02-25","http://www.imdb.com/title/tt2381941/"
@@ -26,8 +27,10 @@ class ImdbParserTestCase(TestCase):
 
     def test_parse_csv_adding_films_and_ratings(self):
         """Successfully adds films and ratings to database"""
+        user = ImdbUser(imdb_id=self.user_id)
+        user.save()
         self.imdb_response = ImdbResponse(self.response)
-        self.imdb_response.addFilmsAndRatingsFromCSV(self.user_id)
+        self.imdb_response.addFilmsAndRatingsFromCSV(user)
 
         films = Film.objects.all()
         count = len(films)
@@ -41,7 +44,7 @@ class ImdbParserTestCase(TestCase):
         self.assertEqual(cabin.year, 2012)
 
         # Parse a second time and test that no duplicates are added
-        self.imdb_response.addFilmsAndRatingsFromCSV(self.user_id)
+        self.imdb_response.addFilmsAndRatingsFromCSV(user)
         films = Film.objects.all()
         self.assertEqual(len(films), count)
         ratings = Rating.objects.all()

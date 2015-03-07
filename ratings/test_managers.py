@@ -12,7 +12,7 @@ class RatingManagerTestCase(TransactionTestCase):
 
     def test_imdb_aggregate_for_user(self):
         """Successfully calculates aggregate of the IMDB ratings for a user's films"""
-        self.assertEqual(Rating.objects.imdb_average_for_users_films('ur9663707'), 7.27038)
+        self.assertEqual(Rating.objects.imdb_average_for_users_films('ur9663707'), 7.26966)
 
     def test_runtime_aggregate_for_user(self):
         self.assertEqual(Rating.objects.average_runtime_for_user('ur9663707'),109.9587)

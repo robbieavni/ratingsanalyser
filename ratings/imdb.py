@@ -21,14 +21,14 @@ class ImdbResponse():
     def __init__(self, response):
         self.response = response
 
-    def addFilmsAndRatingsFromCSV(self, user_id):
+    def addFilmsAndRatingsFromCSV(self, user):
         ratings_list = StringIO.StringIO(self.response.content)
         reader = csv.DictReader(ratings_list, delimiter=',')
         name = reader.fieldnames[8].split(' ')[0]
 
         for row in reader:
             this_film = self.addFilm(row)
-            this_rating = self.addRating(user_id, this_film, name, row)
+            this_rating = self.addRating(user, this_film, name, row)
 
     def addFilm(self, row):
         type = next(value for value, name in Film.FILM_TYPE_CHOICES if name==row['Title type'])
@@ -49,7 +49,7 @@ class ImdbResponse():
 
         return film
 
-    def addRating(self, user_id, film, name, row):
+    def addRating(self, user, film, name, row):
         date_rated = datetime.datetime.strptime(row['created'], "%a %b %d %X %Y")
-        this_rating, created = Rating.objects.get_or_create(user_id=user_id, rating=row[name + ' rated'],
+        this_rating, created = Rating.objects.get_or_create(user=user, rating=row[name + ' rated'],
                                                 date_rated=date_rated, film=film)
