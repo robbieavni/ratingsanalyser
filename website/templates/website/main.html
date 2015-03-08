@@ -1,0 +1,12 @@
+{% extends 'dh5bp/base.html' %}
+{% load url from future %}
+{% load staticfiles %}
+{% block title %}YOUR TITLE HERE{% endblock %}
+{% block content %}
+
+    <form action="/user/new/" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit" />
+    </form>
+{% endblock %}

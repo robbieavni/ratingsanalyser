@@ -12,7 +12,7 @@ class Rating(models.Model):
     objects = RatingManager()
 
     def __unicode__(self):
-        return "%s rating on \"%s\"" % (self.user, self.film.title)
+        return "%s rating on \"%s\"" % (self.user.imdb_id, self.film.title)
 
     class Meta:
         unique_together = ('user', 'film')
