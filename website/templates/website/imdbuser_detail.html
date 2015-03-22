@@ -1,0 +1,9 @@
+{% block content %}
+    <body content="text/html">
+    <h2>Detail page for {{ object.imdb_id }}</h2>
+    <p>Number of items rated is {{ total_rated }}</p>
+    <p>Number of actual films rated (excluding TV shows etc.) is {{ total_films_rated }}</p>
+    <p>Average Rating is {{ average_rating }}</p>
+    <p>Average IMDB rating for films rated is {{ average_imdb_rating }}</p>
+    </body>
+{% endblock %}

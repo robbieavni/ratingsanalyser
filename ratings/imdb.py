@@ -7,7 +7,7 @@ from ratings.models import Rating
 
 class ImdbPoller():
 
-    def __init__(self, cookie):
+    def __init__(self, cookie='BCYoJE9DlwPgWDsoMxvLpKNRncr8Qi-KgGxbbhgmGnbpOO-shjdGyIyUFboEIltBfpoHWOknFvCJPeKD-ygX9i2URrJ8fsxBFRrvUSxp1V6xTlidhXWPORBqGwDg2GEKM4iUCG28RuRTAsRo0hBqZ52QVzuo9wqwFxFc2J6Ha9n0EYdipmHMrV8_0W2E_gNq6US1'):
         self.headers = {'cookie': 'id=' + cookie}
 
     def requestRatingsResponse(self, author_id):
@@ -38,14 +38,11 @@ class ImdbResponse():
         else:
             released = datetime.datetime.strptime(row['Release Date (month/day/year)'], "%Y-%m-%d")
 
-        film, created = Film.objects.get_or_create(imdb_id=row['const'], title=row['Title'], type=type, year=row['Year'],
-                            runtime=int(row['Runtime (mins)']), released=released, imdb_rating=float(row['IMDb Rating']),
-                            number_of_votes=int(row['Num. Votes']))
+        values = {'title': row['Title'], 'type': type, 'year': row['Year'], 'runtime': int(row['Runtime (mins)']),
+                            'released': released, 'imdb_rating': float(row['IMDb Rating']),
+                            'number_of_votes': int(row['Num. Votes'])}
 
-        if not created and int(row['Num. Votes'] > film.number_of_votes):
-            film.number_of_votes = int(row['Num. Votes'])
-            film.imdb_rating = float(row['IMDb Rating'])
-            film.save()
+        film, created = Film.objects.update_or_create(imdb_id=row['const'], defaults=values )
 
         return film
 

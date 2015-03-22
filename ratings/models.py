@@ -1,11 +1,10 @@
 from django.db import models
 from films.models import Film
-from website.models import ImdbUser
 from managers import RatingManager
 
 
 class Rating(models.Model):
-    user = models.ForeignKey(ImdbUser)
+    user = models.ForeignKey('website.ImdbUser')
     rating = models.SmallIntegerField(blank=True, null=True)
     date_rated = models.DateField()
     film = models.ForeignKey(Film)
