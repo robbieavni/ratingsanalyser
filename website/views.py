@@ -44,4 +44,5 @@ class UserDetailView(DetailView):
         context['total_films_rated'] = actual_films_rated
         context['average_rating'] = average_rating
         context['average_imdb_rating'] = average_imdb_rating
+        context['decades_dictionary'] = decades_dictionary
         return context
