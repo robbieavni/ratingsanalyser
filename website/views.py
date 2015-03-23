@@ -11,7 +11,7 @@ class UserCreateView(CreateView):
     fields = ['imdb_id']
 
     def get_success_url(self):
-        return reverse('user-detail', kwargs={'imdb_id': self.user_id})
+        return reverse('user-detail', kwargs={'pk': self.user_id})
 
     def form_invalid(self, form):
         self.user_id = form.instance.imdb_id
