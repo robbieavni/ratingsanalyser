@@ -11,7 +11,7 @@ class UserCreateView(CreateView):
     fields = ['imdb_id']
 
     def get_success_url(self):
-        return reverse('user-detail', kwargs={'pk': self.user_id})
+        return reverse('website:user-detail', kwargs={'pk': self.user_id})
 
     def form_invalid(self, form):
         self.user_id = form.instance.imdb_id
@@ -44,5 +44,5 @@ class UserDetailView(DetailView):
         context['total_films_rated'] = actual_films_rated
         context['average_rating'] = average_rating
         context['average_imdb_rating'] = average_imdb_rating
-        context['decades_dictionary'] = decades_dictionary
+        context['decades_dictionary'] = sorted(decades_dictionary.iteritems())
         return context
