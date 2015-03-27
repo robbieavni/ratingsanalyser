@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
 from django.core.urlresolvers import reverse
 from ratings.models import Rating
 from website.models import ImdbUser
@@ -46,3 +47,7 @@ class UserDetailView(DetailView):
         context['average_imdb_rating'] = average_imdb_rating
         context['decades_dictionary'] = sorted(decades_dictionary.iteritems())
         return context
+
+
+class UserListView(ListView):
+    model = ImdbUser

@@ -1,18 +1,97 @@
 {% extends 'website/main.html' %}
 {% load bootstrap3 %}
+{% load website_extras %}
 
 {% block main_content %}
+
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <h2>Detail page for {{ object.imdb_id }}</h2>
+            <br />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-film fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{ total_rated }}</div>
+                            <div>Movies rated!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-star fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{ average_rating|floatformat:2 }}</div>
+                            <div>Your Average Rating</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-users fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{ average_imdb_rating|floatformat:2 }}</div>
+                            <div>Average IMDB Rating</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+        {% if average_rating|subtract:average_imdb_rating > 0 %}
+            <div class="panel panel-success">
+        {% else %}
+            <div class="panel panel-danger">
+        {% endif %}
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            {% if average_rating|subtract:average_imdb_rating > 0 %}
+                                <i class="fa fa-thumbs-up fa-5x"></i>
+                            {% else %}
+                                <i class="fa fa-thumbs-down fa-5x"></i>
+                            {% endif %}
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            {% if average_rating|subtract:average_imdb_rating > 0 %}
+                                <div class="huge">{{ average_rating|subtract:average_imdb_rating|floatformat:2 }}</div>
+                                <div>Kinder than IMDB Users</div>
+                            {% else %}
+                                <div class="huge">{{ average_imdb_rating|subtract:average_rating|floatformat:2 }}</div>
+                                <div>Harsher than IMDB Users</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
 
-        <div class="col-lg-12 text-center">
+        <div class="col-lg-6 text-center">
 
-            <h2>Detail page for {{ object.imdb_id }}</h2>
-            <p>Number of items rated is {{ total_rated }}</p>
-            <p>Number of actual films rated (excluding TV shows etc.) is {{ total_films_rated }}</p>
-            <p>Average Rating is {{ average_rating }}</p>
-            <p>Average IMDB rating for films rated is {{ average_imdb_rating }}</p>
-
-            <div id="container" style="width:100%; height:400px;"></div>
+            <div id="container" style="width:100%; height:350px;"></div>
 
         </div>
 
@@ -31,11 +110,11 @@
                 },
                 xAxis: [{
                     categories: [
-                                    {% for decade in decades_dictionary %}
-                                        {% if decade.1.0 > 1 %}
-                                            '{{ decade.0 }}',
-                                        {% endif %}
-                                    {% endfor %}
+                        {% for decade in decades_dictionary %}
+                            {% if decade.1.0 > 1 %}
+                                '{{ decade.0 }}',
+                            {% endif %}
+                        {% endfor %}
                     ],
                     crosshair: true
                 }],
@@ -73,12 +152,10 @@
                     shared: true
                 },
                 legend: {
-                    layout: 'vertical',
-                    align: 'left',
-                    x: 120,
+                    align: 'center',
+                    x: 0,
                     verticalAlign: 'top',
-                    y: 40,
-                    floating: true,
+                    y: 30,
                     backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
                 },
                 series: [{
@@ -86,11 +163,11 @@
                     type: 'column',
                     yAxis: 1,
                     data: [
-                            {% for decade in decades_dictionary %}
-                                {% if decade.1.0 > 1 %}
-                                    {{ decade.1.0 }},
-                                {% endif %}
-                            {% endfor %}
+                        {% for decade in decades_dictionary %}
+                            {% if decade.1.0 > 1 %}
+                                {{ decade.1.0 }},
+                            {% endif %}
+                        {% endfor %}
                     ],
                     tooltip: {
                         valueSuffix: ''
@@ -100,11 +177,11 @@
                     name: 'Average Rating Given',
                     type: 'spline',
                     data: [
-                            {% for decade in decades_dictionary %}
-                                {% if decade.1.0 > 1 %}
-                                    {{ decade.1.1 }},
-                                {% endif %}
-                            {% endfor %}
+                        {% for decade in decades_dictionary %}
+                            {% if decade.1.0 > 1 %}
+                                {{ decade.1.1 }},
+                            {% endif %}
+                        {% endfor %}
                     ],
                     tooltip: {
                         valueSuffix: ''

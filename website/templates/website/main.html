@@ -6,6 +6,7 @@
 {% block head %}
 
     <link rel="stylesheet" href="{% static "website/css/main.css" %}">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     {% bootstrap_css %}
     {% bootstrap_javascript %}
 
@@ -40,13 +41,13 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
+                        <a href="{% url 'website:user-create' %}">New</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'website:user-list' %}">List</a>
+                    </li>
+                    <li>
                         <a href="#">About</a>
-                    </li>
-                    <li>
-                        <a href="#">Services</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
                     </li>
                 </ul>
             </div>
