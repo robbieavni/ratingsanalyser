@@ -33,3 +33,4 @@ class UserCreateViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.redirect_chain), 1)
         self.assertTrue('average_imdb_rating' in response.context)
+        self.assertTrue('hipster_list' in response.context)
