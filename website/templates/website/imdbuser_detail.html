@@ -98,24 +98,49 @@
         <div class="col-lg-6 text-center" style="min-height: 350px;">
 
             <div class="row">
-                <div class="col-xs-3">
-                    <i class="fa fa-camera-retro fa-5x"></i>
+
+                <div class="col-lg-6 col-md-6">
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <span style="font-size:5em;" class="glyphicon glyphicon-sunglasses"></span>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div><strong>Top Hipster Films</strong></div>
+                                    {% for item in hipster_list|slice:":3" %}
+                                        <div>{{ forloop.counter }}. {{ item.title }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer text-right">
+                            <div><a href="#">What's this?</a></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-xs-9 text-right">
-                    {% for item in hipster_list|slice:":3" %}
-                        <div>{{ item.title }}</div>
-                    {% endfor %}
+
+                <div class="col-lg-6 col-md-6">
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-users fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div><strong>Top Popular Films</strong></div>
+                                    {% for item in hipster_list|slice:"3:" %}
+                                        <div>{{ forloop.counter }}. {{ item.title }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer text-right">
+                            <div><a href="#">What's this?</a></div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-3">
-                    <i class="fa fa-users fa-5x"></i>
-                </div>
-                <div class="col-xs-9 text-right">
-                    {% for item in hipster_list|slice:"3:" %}
-                        <div>{{ item.title }}</div>
-                    {% endfor %}
-                </div>
+
             </div>
 
         </div>
