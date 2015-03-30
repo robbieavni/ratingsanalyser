@@ -40,12 +40,14 @@ class UserDetailView(DetailView):
         average_rating = Rating.objects.average_for_user(self.object)
         average_imdb_rating = Rating.objects.imdb_average_for_users_films(self.object)
         decades_dictionary = Rating.objects.decade_breakdown(self.object)
+        hipster_list = Rating.objects.hipster_films(self.object)
         context = super(UserDetailView, self).get_context_data(**kwargs)
         context['total_rated'] = total_rated
         context['total_films_rated'] = actual_films_rated
         context['average_rating'] = average_rating
         context['average_imdb_rating'] = average_imdb_rating
         context['decades_dictionary'] = sorted(decades_dictionary.iteritems())
+        context['hipster_list'] = hipster_list
         return context
 
 
