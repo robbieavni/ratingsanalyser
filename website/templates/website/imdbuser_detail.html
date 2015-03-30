@@ -95,6 +95,31 @@
 
         </div>
 
+        <div class="col-lg-6 text-center" style="min-height: 350px;">
+
+            <div class="row">
+                <div class="col-xs-3">
+                    <i class="fa fa-camera-retro fa-5x"></i>
+                </div>
+                <div class="col-xs-9 text-right">
+                    {% for item in hipster_list|slice:":3" %}
+                        <div>{{ item.title }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3">
+                    <i class="fa fa-users fa-5x"></i>
+                </div>
+                <div class="col-xs-9 text-right">
+                    {% for item in hipster_list|slice:"3:" %}
+                        <div>{{ item.title }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
     </div>
 {% endblock %}
 
