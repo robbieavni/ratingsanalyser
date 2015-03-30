@@ -32,14 +32,25 @@ class RatingManager(models.Manager):
     def hipster_films(self, user):
         top_three = self.filter(user=user).order_by('film__number_of_votes')[0:3]
         bottom_three = self.filter(user=user).order_by('-film__number_of_votes')[0:3]
-        high_and_low = chain(top_three, bottom_three)
-        hipster_list = []
-        for item in high_and_low:
-            inner_dict = {}
-            inner_dict['title'] = item.film.title
-            inner_dict['votes'] = item.film.number_of_votes
-            inner_dict['id'] = item.film.imdb_id
-            inner_dict['imdb_rating'] = item.film.imdb_rating
-            inner_dict['user_rating'] = item.rating
-            hipster_list.append(inner_dict)
-        return hipster_list
+        return generate_film_list(top_three, bottom_three)
+
+    def high_low_runtime_list(self, user):
+        top_three = self.filter(user=user).order_by('film__runtime')[0:3]
+        bottom_three = self.filter(user=user).order_by('-film__runtime')[0:3]
+        return generate_film_list(top_three, bottom_three)
+
+
+def generate_film_list(*args):
+    """Takes in a set of rating querysets and returns a list of dictionaries describing all the corresponding films"""
+    chained_list = chain(*args)
+    film_list = []
+    for item in chained_list:
+        inner_dict = {}
+        inner_dict['title'] = item.film.title
+        inner_dict['votes'] = item.film.number_of_votes
+        inner_dict['runtime'] = item.film.runtime
+        inner_dict['id'] = item.film.imdb_id
+        inner_dict['imdb_rating'] = item.film.imdb_rating
+        inner_dict['user_rating'] = item.rating
+        film_list.append(inner_dict)
+    return film_list

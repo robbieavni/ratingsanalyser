@@ -9,11 +9,9 @@ class RatingManagerTestCase(TransactionTestCase):
         self.user = ImdbUser.objects.get(imdb_id='ur9663707')
 
     def test_user_aggregate_rating(self):
-        """Successfully calculates aggregates for a user's ratings"""
         self.assertEqual(Rating.objects.average_for_user(self.user), 7.0385)
 
     def test_imdb_aggregate_for_user(self):
-        """Successfully calculates aggregate of the IMDB ratings for a user's films"""
         self.assertEqual(Rating.objects.imdb_average_for_users_films(self.user), 7.63846)
 
     def test_runtime_aggregate_for_user(self):
@@ -43,5 +41,18 @@ class RatingManagerTestCase(TransactionTestCase):
                 in_order = False
         for i in range(3,5,1):
             if (hipster_list[i]['votes'] < hipster_list[i+1]['votes']):
+                in_order = False
+        self.assertTrue(in_order)
+
+    def test_runtime_list(self):
+        runtime_list = Rating.objects.high_low_runtime_list(self.user)
+        self.assertEqual(len(runtime_list),6)
+        self.assertEqual(runtime_list[0]['runtime'], 60)
+        in_order = True
+        for i in range(0,3,1):
+            if (runtime_list[i]['runtime'] > runtime_list[i+1]['runtime']):
+                in_order = False
+        for i in range(3,5,1):
+            if (runtime_list[i]['runtime'] < runtime_list[i+1]['runtime']):
                 in_order = False
         self.assertTrue(in_order)
