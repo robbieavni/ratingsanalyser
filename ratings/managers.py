@@ -39,6 +39,11 @@ class RatingManager(models.Manager):
         bottom_three = self.filter(user=user).order_by('-film__runtime')[0:3]
         return generate_film_list(top_three, bottom_three)
 
+    def most_watched_directors(self, user):
+        # TODO: Fix this
+        top_three = self.filter(user=user).annotate(num_director=models.Count('film__director')).order_by('-num_director')[:3]
+        return generate_film_list(top_three)
+
 
 def generate_film_list(*args):
     """Takes in a set of rating querysets and returns a list of dictionaries describing all the corresponding films"""

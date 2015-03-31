@@ -2,7 +2,7 @@ import requests
 import StringIO
 import csv
 import datetime
-from films.models import Film, Director
+from films.models import Film, Director, Genre
 from ratings.models import Rating
 
 class ImdbPoller():
@@ -41,6 +41,9 @@ class ImdbResponse():
         else:
             released = datetime.datetime.strptime(row['Release Date (month/day/year)'], "%Y-%m-%d")
 
+        if (row['IMDb Rating'] == ''):
+            return False
+
         values = {'title': row['Title'], 'type': type, 'year': row['Year'], 'runtime': int(row['Runtime (mins)']),
                             'released': released, 'imdb_rating': float(row['IMDb Rating']),
                             'number_of_votes': int(row['Num. Votes'])}
@@ -48,6 +51,7 @@ class ImdbResponse():
         film, created = Film.objects.update_or_create(imdb_id=row['const'], defaults=values )
 
         self.addDirectors(film, row['Directors'])
+        self.addGenres(film, row['Genres'])
 
         return film
 
@@ -61,3 +65,9 @@ class ImdbResponse():
         for director in directors:
             this_director, created = Director.objects.get_or_create(name=director)
             this_director.films.add(film)
+
+    def addGenres(self, film, genre_field):
+        genres = [x.strip().replace('_','-') for x in genre_field.split(',')]
+        for genre in genres:
+            this_genre, created = Genre.objects.get_or_create(genre=genre)
+            this_genre.films.add(film)

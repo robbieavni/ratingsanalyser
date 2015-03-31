@@ -1,6 +1,6 @@
 from django.test import TransactionTestCase
 from imdb import ImdbPoller, ImdbResponse
-from films.models import Film, Director
+from films.models import Film, Director, Genre
 from ratings.models import Rating
 from website.models import ImdbUser
 
@@ -39,18 +39,21 @@ class ImdbParserTestCase(TransactionTestCase):
         self.assertEqual(len(ratings), count)
         directors = Director.objects.all()
         self.assertEqual(len(directors), 4)
-
+        genres = Genre.objects.all()
+        self.assertEqual(len(genres), 9)
 
         cabin = Film.objects.get(imdb_id='tt1259521')
         self.assertEqual(cabin.title, 'The Cabin in the Woods')
         self.assertEqual(cabin.runtime, 95)
         self.assertEqual(cabin.year, 2012)
+        cabin_genres = cabin.genre_set.all()
+        self.assertEqual(len(cabin_genres), 3)
+        self.assertEqual(cabin_genres[0].genre, 'horror')
 
         focus = Film.objects.get(imdb_id='tt2381941')
         focus_directors = focus.director_set.all()
         self.assertEqual(len(focus_directors), 2)
-        self.assertIn(focus_directors[0].name, 'Glenn Ficarra')
-        self.assertIn(focus_directors[1].name, 'John Requa')
+        self.assertEqual(focus_directors[0].name, 'Glenn Ficarra')
 
         # Parse a second time and test that no duplicates are added
         self.imdb_response.addFilmsAndRatingsFromCSV(user)

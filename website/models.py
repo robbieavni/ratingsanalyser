@@ -11,7 +11,10 @@ class ImdbUser(models.Model):
 
     def process_ratings(self):
         poller = ImdbPoller()
-        response = poller.requestRatingsResponse(self.imdb_id)
+        try:
+            response = poller.requestRatingsResponse(self.imdb_id)
+        except ConnectionError as e:
+            return False
         if response.status_code != 200:
             return False
         imdb_response = ImdbResponse(response)

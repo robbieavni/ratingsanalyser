@@ -42,6 +42,7 @@ class UserDetailView(DetailView):
         decades_dictionary = Rating.objects.decade_breakdown(self.object)
         hipster_list = Rating.objects.hipster_films(self.object)
         runtime_list = Rating.objects.high_low_runtime_list(self.object)
+        director_list = Rating.objects.most_watched_directors(self.object)
         context = super(UserDetailView, self).get_context_data(**kwargs)
         context['total_rated'] = total_rated
         context['total_films_rated'] = actual_films_rated
