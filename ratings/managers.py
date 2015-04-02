@@ -1,5 +1,6 @@
 from django.db import models
 from itertools import chain
+from films.models import Director
 
 
 class RatingManager(models.Manager):
@@ -40,9 +41,13 @@ class RatingManager(models.Manager):
         return generate_film_list(top_three, bottom_three)
 
     def most_watched_directors(self, user):
-        # TODO: Fix this
-        top_three = self.filter(user=user).annotate(num_director=models.Count('film__director')).order_by('-num_director')[:3]
-        return generate_film_list(top_three)
+        # TODO: Is this correct? It only includes directors you have rated but does it only count films you have rated?
+        director_count_list = Director.objects.filter(films__rating__user=user).annotate(film_count=models.Count('films__director')).order_by('-film_count')
+        top_three = director_count_list[0:3]
+        director_list = []
+        for item in top_three:
+            director_list.append({'director': item.name, 'number_rated': item.film_count})
+        return director_list
 
 
 def generate_film_list(*args):
