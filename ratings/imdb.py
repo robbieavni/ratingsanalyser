@@ -21,53 +21,57 @@ class ImdbResponse():
     def __init__(self, response):
         self.response = response
 
-    def addFilmsAndRatingsFromCSV(self, user):
+    def addFilmsAndRatingsFromResponse(self, user):
         ratings_list = StringIO.StringIO(self.response.content)
         reader = csv.DictReader(ratings_list, delimiter=',')
-        name = reader.fieldnames[8].split(' ')[0]
+        addFilmsAndRatingsFromCSV(user, reader)
 
-        for row in reader:
-            this_film = self.addFilm(row)
-            if this_film:
-                this_rating = self.addRating(user, this_film, name, row)
 
-    def addFilm(self, row):
-        type = next(value for value, name in Film.FILM_TYPE_CHOICES if name==row['Title type'])
-        if type not in {'FF','D','V','TVM'}:
-            return False
+def addFilmsAndRatingsFromCSV(user, reader):
+    name = reader.fieldnames[8].split(' ')[0]
 
-        if len(row['Release Date (month/day/year)'].split('-')) == 2:
-            released = datetime.datetime.strptime(row['Release Date (month/day/year)'], "%Y-%m")
-        else:
-            released = datetime.datetime.strptime(row['Release Date (month/day/year)'], "%Y-%m-%d")
+    for row in reader:
+        this_film = addFilm(row)
+        if this_film:
+            this_rating = addRating(user, this_film, name, row)
 
-        if (row['IMDb Rating'] == ''):
-            return False
+def addFilm(row):
+    type = next(value for value, name in Film.FILM_TYPE_CHOICES if name==row['Title type'])
+    if type not in {'FF','D','V','TVM'}:
+        return False
 
-        values = {'title': row['Title'], 'type': type, 'year': row['Year'], 'runtime': int(row['Runtime (mins)']),
-                            'released': released, 'imdb_rating': float(row['IMDb Rating']),
-                            'number_of_votes': int(row['Num. Votes'])}
+    if len(row['Release Date (month/day/year)'].split('-')) == 2:
+        released = datetime.datetime.strptime(row['Release Date (month/day/year)'], "%Y-%m")
+    else:
+        released = datetime.datetime.strptime(row['Release Date (month/day/year)'], "%Y-%m-%d")
 
-        film, created = Film.objects.update_or_create(imdb_id=row['const'], defaults=values )
+    if (row['IMDb Rating'] == ''):
+        return False
 
-        self.addDirectors(film, row['Directors'])
-        self.addGenres(film, row['Genres'])
+    values = {'title': row['Title'], 'type': type, 'year': row['Year'], 'runtime': int(row['Runtime (mins)']),
+                        'released': released, 'imdb_rating': float(row['IMDb Rating']),
+                        'number_of_votes': int(row['Num. Votes'])}
 
-        return film
+    film, created = Film.objects.update_or_create(imdb_id=row['const'], defaults=values )
 
-    def addRating(self, user, film, name, row):
-        date_rated = datetime.datetime.strptime(row['created'], "%a %b %d %X %Y")
-        this_rating, created = Rating.objects.get_or_create(user=user, rating=row[name + ' rated'],
-                                                date_rated=date_rated, film=film)
+    addDirectors(film, row['Directors'])
+    addGenres(film, row['Genres'])
 
-    def addDirectors(self, film, directors_field):
-        directors = [x.strip() for x in directors_field.split(',')]
-        for director in directors:
-            this_director, created = Director.objects.get_or_create(name=director)
-            this_director.films.add(film)
+    return film
 
-    def addGenres(self, film, genre_field):
-        genres = [x.strip().replace('_','-') for x in genre_field.split(',')]
-        for genre in genres:
-            this_genre, created = Genre.objects.get_or_create(genre=genre)
-            this_genre.films.add(film)
+def addRating(user, film, name, row):
+    date_rated = datetime.datetime.strptime(row['created'], "%a %b %d %X %Y")
+    this_rating, created = Rating.objects.get_or_create(user=user, rating=row[name + ' rated'],
+                                            date_rated=date_rated, film=film)
+
+def addDirectors(film, directors_field):
+    directors = [x.strip() for x in directors_field.split(',')]
+    for director in directors:
+        this_director, created = Director.objects.get_or_create(name=director)
+        this_director.films.add(film)
+
+def addGenres(film, genre_field):
+    genres = [x.strip().replace('_','-') for x in genre_field.split(',')]
+    for genre in genres:
+        this_genre, created = Genre.objects.get_or_create(genre=genre)
+        this_genre.films.add(film)

@@ -30,7 +30,7 @@ class ImdbParserTestCase(TransactionTestCase):
         user = ImdbUser(imdb_id=self.user_id)
         user.save()
         self.imdb_response = ImdbResponse(self.response)
-        self.imdb_response.addFilmsAndRatingsFromCSV(user)
+        self.imdb_response.addFilmsAndRatingsFromResponse(user)
 
         films = Film.objects.all()
         count = len(films)
@@ -56,7 +56,7 @@ class ImdbParserTestCase(TransactionTestCase):
         self.assertEqual(focus_directors[0].name, 'Glenn Ficarra')
 
         # Parse a second time and test that no duplicates are added
-        self.imdb_response.addFilmsAndRatingsFromCSV(user)
+        self.imdb_response.addFilmsAndRatingsFromResponse(user)
         films = Film.objects.all()
         self.assertEqual(len(films), count)
         ratings = Rating.objects.all()

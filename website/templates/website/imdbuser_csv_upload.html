@@ -1,0 +1,24 @@
+{% extends 'website/main.html' %}
+{% load bootstrap3 %}
+
+{% block main_content %}
+    <div class="row">
+
+        <div class="col-lg-12 text-center">
+
+            <h1>Enter your IMDB id</h1>
+            <br />
+
+            <form style="display: inline-block;" action="{% url 'website:user-csv' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.file }}
+                <br />
+                <button type="submit" class="btn btn-primary">
+                    Submit
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+{% endblock %}

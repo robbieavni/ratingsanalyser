@@ -10,7 +10,7 @@
 
             <form action="{% url 'website:user-create' %}" method="post">
                 {% csrf_token %}
-                {{ form.imdb_id}}
+                {{ form.imdb_id }}
                 <input type="submit" value="Submit" />
             </form>
 
