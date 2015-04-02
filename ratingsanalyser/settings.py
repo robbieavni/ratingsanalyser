@@ -62,14 +62,27 @@ WSGI_APPLICATION = 'ratingsanalyser.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
+#if 'MYSQL_USER' in os.environ:
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django_db',
-        'USER': 'root',
-        'PASSWORD': 'password',
+        'NAME': 'test',
+        'USER': os.environ.get('MYSQL_USER'),
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD'),
+        'HOST': '127.0.0.1',
     }
 }
+
+# else:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.mysql',
+#             'NAME': 'django_db',
+#             'USER': 'root',
+#             'PASSWORD': 'password',
+#         }
+#     }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
